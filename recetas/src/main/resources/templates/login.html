@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    </head>
+    <body>
+        <div th:if="${param.error}">
+            Ususario o Contraseña incorrectos
+        </div>
+        <div th:if="${param.logout}">
+            Se ha Deslogueado
+        </div>
+
+        <form th:action="@{/login}" method="post">
+            <div><label> Usuario : <input type="text" name="username"/></label></div>
+            <div><label> Contraseña : <input type="password" name="password"/></label></div>
+            <div><input type="submit" value="Log-In"/></div>
+        </form>
+    </body>
+</html>
