@@ -11,10 +11,19 @@
             Se ha Deslogueado
         </div>
 
-        <form th:action="@{/login}" method="post">
-            <div><label> Usuario : <input type="text" name="username"/></label></div>
-            <div><label> Contraseña : <input type="password" name="password"/></label></div>
-            <div><input type="submit" value="Log-In"/></div>
-        </form>
+        <main class="form-signin w-100 m-auto">
+            <form th:action="@{/login}" method="post">
+              <div class="form-floating">
+                <input type="text" class="form-control" name="username" id="floatingInput" placeholder="NombreUsuario">
+                <label for="floatingInput">Usuario</label>
+              </div>
+              <div class="form-floating">
+                <input type="password" class="form-control" name="password" id="floatingPassword" placeholder="Contraseña">
+                <label for="floatingPassword">Contraseña</label>
+              </div>
+              <button class="btn btn-primary w-100 py-2" type="submit">Sign in</button>
+            </form>
+        </main>
+
     </body>
 </html>
