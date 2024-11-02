@@ -31,4 +31,8 @@ public class InstruccionService {
         instruccionRepository.deleteById(id);
     }
 
+    public List<Instruccion> getInstruccionByReceta(Long id){
+        return instruccionRepository.findById_receta(id);
+    }
+
 }

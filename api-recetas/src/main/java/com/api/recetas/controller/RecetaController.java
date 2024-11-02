@@ -1,7 +1,6 @@
 package com.api.recetas.controller;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -15,6 +14,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.api.recetas.exception.ResourceNotFoundException;
+import com.api.recetas.model.FullReceta;
 import com.api.recetas.model.Receta;
 import com.api.recetas.service.RecetaService;
 
@@ -26,8 +27,8 @@ public class RecetaController {
     private RecetaService recetaService;
 
     @GetMapping
-    public ResponseEntity<List<Receta>> getAllReceta() {
-        List<Receta> receta = recetaService.getAllReceta();
+    public ResponseEntity<List<FullReceta>> getAllReceta() {
+        List<FullReceta> receta = recetaService.getAllReceta();
         return ResponseEntity.ok(receta);
     }
     
@@ -38,26 +39,26 @@ public class RecetaController {
     }
     
     @GetMapping("/{id}")
-    public ResponseEntity<Optional<Receta>> getReceta(@PathVariable Long id) {
-        Optional<Receta> receta = recetaService.getRecetaById(id);
+    public ResponseEntity<FullReceta> getReceta(@PathVariable Long id) {
+        FullReceta receta = recetaService.getFullRecetabyId(id)
+            .orElseThrow(() -> new ResourceNotFoundException("Receta con ID "+ id +" no se encuentra"));
         return ResponseEntity.ok(receta);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteReceta(@PathVariable Long id){
+        recetaService.getRecetaById(id)
+            .orElseThrow(() -> new ResourceNotFoundException("Receta con ID "+ id +" no se encuentra"));
         recetaService.deleteRecetaById(id);
         return ResponseEntity.noContent().build();
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<Receta> updateReceta(@PathVariable Long id, @RequestBody Receta updatedReceta ) {
-        Optional<Receta> receta = recetaService.getRecetaById(id);
-        if(receta.isPresent()){
-            Receta localReceta = receta.get();
-            localReceta.setNombre(updatedReceta.getNombre());
-            Receta resulReceta = recetaService.saveReceta(localReceta);
-            return ResponseEntity.ok(resulReceta);
-        }
-        return ResponseEntity.noContent().build();
+        Receta receta = recetaService.getRecetaById(id)
+            .orElseThrow(() -> new ResourceNotFoundException("Receta con ID "+ id +" no se encuentra"));
+        receta.setNombre(updatedReceta.getNombre());
+        Receta resulReceta = recetaService.saveReceta(receta);
+        return ResponseEntity.ok(resulReceta);
     }
 }

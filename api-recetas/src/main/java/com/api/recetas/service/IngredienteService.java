@@ -31,4 +31,8 @@ public class IngredienteService {
         ingredienteRepository.deleteById(id);
     }
 
+    public List<Ingrediente> getIngredientesByReceta(Long id){
+        return ingredienteRepository.findById_receta(id);
+    }
+
 }

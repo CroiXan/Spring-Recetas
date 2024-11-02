@@ -12,6 +12,8 @@ public class Instruccion {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id_instruccion;
 
+    private Long id_receta;
+
     private int posicion;
 
     private String descripcion;
@@ -38,6 +40,14 @@ public class Instruccion {
 
     public void setDescripcion(String descripcion) {
         this.descripcion = descripcion;
+    }
+
+    public Long getId_receta() {
+        return id_receta;
+    }
+
+    public void setId_receta(Long id_receta) {
+        this.id_receta = id_receta;
     }
 
 }
