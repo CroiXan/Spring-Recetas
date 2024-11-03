@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 import com.duoc.recetas.model.IngredienteResponse;
 import com.duoc.recetas.model.InstruccionResponse;
+import com.duoc.recetas.model.RecetaRequest;
 import com.duoc.recetas.model.RecetaResponse;
 import com.duoc.recetas.service.RecetaService;
 
@@ -38,9 +39,12 @@ public class GestorController {
         return "gestor";
     }
 
-    @GetMapping("/agregar")
-    public String agregar() {
-        return "agregarreceta";
+    @PostMapping("/agregarreceta")
+    public String agregarReceta(@RequestParam("nombreReceta") String nombreReceta) {
+        RecetaRequest request = new RecetaRequest();
+        request.setNombre(nombreReceta);
+        recetaService.addReceta(request).block();
+        return "redirect:/gestor";
     }
 
     @GetMapping("/editar/{id}")

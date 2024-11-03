@@ -98,6 +98,15 @@ public class RecetaService {
         return listRecetaResponse;
     }
 
+    public Mono<RecetaRequest> addReceta(RecetaRequest request){
+        return this.webClient.post()
+            .uri("receta")
+            .bodyValue(request)
+            .retrieve()
+            .bodyToMono(RecetaRequest.class)
+            .switchIfEmpty(Mono.empty());
+    }
+
     public Mono<RecetaResponse> getRecetaById(Long recetaId){
         Mono<RecetaResponse> recetaResponse = webClient.get()
             .uri("receta/{id}",recetaId)
