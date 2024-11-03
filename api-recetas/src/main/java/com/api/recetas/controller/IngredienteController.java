@@ -54,7 +54,7 @@ public class IngredienteController {
     public ResponseEntity<Void> deleteIngrediente(@PathVariable Long id){
         ingredienteService.getIngredienteById(id)
             .orElseThrow(() -> new ResourceNotFoundException("Ingrediente con ID "+ id +" no se encuentra"));
-        ingredienteService.getIngredienteById(id);
+        ingredienteService.deleteIngredienteById(id);
         return ResponseEntity.noContent().build();
     }
 

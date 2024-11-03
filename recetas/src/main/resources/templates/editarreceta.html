@@ -42,29 +42,41 @@
                         <label for="descripcion" class="form-label">Descripcion</label>
                         <input type="text" class="form-control" id="descripcion" name="descripcion" required="">
                         <div class="invalid-feedback"></div>
-                        <button type="submit" class="btn btn-lg btn-primary">Agregar Ingredinte</button>
+                        <button type="submit" class="btn btn-lg btn-primary">Agregar</button>
                     </div>
                 </form>
-
-                
 
                 <hr class="my-4">
                 <h4 class="mb-3">Instrucciones</h4>
 
-                <div class="col-sm-3">
-                    <label for="firstName" class="form-label">First name</label>
-                    <input type="text" class="form-control" id="firstName" placeholder="" value="" required="">
-                    <div class="invalid-feedback">
-                      Valid first name is required.
-                    </div>
+                <div th:each="instruccion : ${receta.listaInstrucciones}">
+                    <form th:action="@{/editinstruccion/{id}(id=${receta.id_receta})}" method="post">
+                        <div class="col-md-9">
+                            <input type="hidden" name="instruccionId" th:value="${instruccion.id_instruccion}" />
+                            <label for="descripcion" class="form-label">Descripción</label>
+                            <input type="text" class="form-control" id="descripcion" name="descripcion" th:value="${instruccion.descripcion}" required="">
+                            
+                            <label for="posicion" class="form-label">Posición</label>
+                            <input type="number" class="form-control" id="posicion" name="posicion" th:value="${instruccion.posicion}" required="">
+                
+                            <button type="submit" class="btn btn-lg btn-primary" name="action" value="editar">Editar</button>
+                            <button type="submit" class="btn btn-lg btn-primary" name="action" value="eliminar">Eliminar</button>
+                        </div>
+                    </form>
                 </div>
-                <div class="col-sm-9">
-                    <label for="firstName" class="form-label">First name</label>
-                    <input type="text" class="form-control" id="firstName" placeholder="" value="" required="">
-                    <div class="invalid-feedback">
-                      Valid first name is required.
+
+                <form th:action="@{/addinstruccion/{id}(id=${receta.id_receta})}" method="post">
+                    <div class="col-md-9">
+                        <label for="descripcion" class="form-label">Descripción</label>
+                        <input type="text" class="form-control" id="descripcion" name="descripcion" required="">
+                        
+                        <label for="posicion" class="form-label">Posición</label>
+                        <input type="number" class="form-control" id="posicion" name="posicion" required="">
+            
+                        <button type="submit" class="btn btn-lg btn-primary">Agregar</button>
                     </div>
-                </div>
+                </form>
+
             </div>
         </div>
     </div>

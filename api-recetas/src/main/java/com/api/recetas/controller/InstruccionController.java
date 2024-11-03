@@ -54,7 +54,7 @@ public class InstruccionController {
     public ResponseEntity<Void> deleteInstruccion(@PathVariable Long id){
         instruccionService.getInstruccionById(id)
             .orElseThrow(() -> new ResourceNotFoundException("Instruccion con ID "+ id +" no se encuentra"));
-        instruccionService.getInstruccionById(id);
+        instruccionService.deleteInstruccionById(id);
         return ResponseEntity.noContent().build();
     }
 

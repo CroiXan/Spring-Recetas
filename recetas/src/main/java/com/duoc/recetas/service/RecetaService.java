@@ -2,6 +2,7 @@ package com.duoc.recetas.service;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -9,6 +10,7 @@ import java.util.stream.Collectors;
 
 import com.duoc.recetas.model.IngredienteResponse;
 import com.duoc.recetas.model.Instruccion;
+import com.duoc.recetas.model.InstruccionResponse;
 import com.duoc.recetas.model.Receta;
 import com.duoc.recetas.model.RecetaResponse;
 
@@ -91,8 +93,35 @@ public class RecetaService {
             .uri("receta")
             .retrieve()
             .bodyToFlux(RecetaResponse.class)
-            .switchIfEmpty(Flux.empty());;
+            .switchIfEmpty(Flux.empty());
         return listRecetaResponse;
+    }
+
+    public Mono<RecetaResponse> getRecetaById(Long recetaId){
+        Mono<RecetaResponse> recetaResponse = webClient.get()
+            .uri("receta/{id}",recetaId)
+            .retrieve()
+            .bodyToMono(RecetaResponse.class)
+            .switchIfEmpty(Mono.empty());
+        return recetaResponse;
+    }
+
+    public Mono<InstruccionResponse> getInstruccionById(Long instruccionId){
+        Mono<InstruccionResponse> instruccionResponse = webClient.get()
+            .uri("instrucciones/{id}",instruccionId)
+            .retrieve()
+            .bodyToMono(InstruccionResponse.class)
+            .switchIfEmpty(Mono.empty());
+        return instruccionResponse;
+    }
+
+    public Mono<IngredienteResponse> getIngredienteById(Long ingredienteId){
+        Mono<IngredienteResponse> ingredienteResponse = webClient.get()
+            .uri("ingredientes/{id}",ingredienteId)
+            .retrieve()
+            .bodyToMono(IngredienteResponse.class)
+            .switchIfEmpty(Mono.empty());
+        return ingredienteResponse;
     }
 
     public Mono<IngredienteResponse> addIngrediente(IngredienteResponse request){
@@ -101,5 +130,43 @@ public class RecetaService {
             .bodyValue(request)
             .retrieve()
             .bodyToMono(IngredienteResponse.class);
+    }
+
+    public void eliminarIngrediente(Long ingredienteId) {
+        this.webClient.delete()
+            .uri("ingredientes/{id}",ingredienteId)
+            .retrieve()
+            .bodyToMono(Void.class)
+            .block();
+    }
+
+    public void editarInstruccion(InstruccionResponse request) {
+        this.webClient.put()
+            .uri("instrucciones/{id}",request.getId_instruccion())
+            .bodyValue(request)
+            .retrieve()
+            .bodyToMono(InstruccionResponse.class)
+            .block();;
+    }
+    
+    public void eliminarInstruccion(Long instruccionId) {
+        this.webClient.delete()
+            .uri("instrucciones/{id}",instruccionId)
+            .retrieve()
+            .bodyToMono(Void.class)
+            .block();
+    }
+    
+    public void agregarInstruccion(Long recetaId, String descripcion, int posicion) {
+        InstruccionResponse request = new InstruccionResponse();
+        request.setId_receta(recetaId);
+        request.setDescripcion(descripcion);
+        request.setPosicion(posicion);
+        this.webClient.post()
+            .uri("instrucciones")
+            .bodyValue(request)
+            .retrieve()
+            .bodyToMono(InstruccionResponse.class)
+            .block();
     }
 }

@@ -1,7 +1,6 @@
 package com.duoc.recetas.controller;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -9,6 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
 import com.duoc.recetas.model.IngredienteResponse;
+import com.duoc.recetas.model.InstruccionResponse;
 import com.duoc.recetas.model.RecetaResponse;
 import com.duoc.recetas.service.RecetaService;
 
@@ -16,7 +16,6 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
 
@@ -47,13 +46,9 @@ public class GestorController {
     @GetMapping("/editar/{id}")
     public String editar(@PathVariable("id") Long id, Model model) {
         selectedReceta = new RecetaResponse();
-        Optional<RecetaResponse> resultReceta = listaRecetas.stream().filter(receta -> receta.getId_receta() == id ).findFirst();
-
-        if (resultReceta.isPresent()) {
-            selectedReceta = resultReceta.get();
-        }
+        Mono<RecetaResponse> monoRecetaResponse = recetaService.getRecetaById(id);
+        selectedReceta = monoRecetaResponse.block();
         model.addAttribute("receta", selectedReceta);
-
         return "editarreceta";
     }
 
@@ -64,7 +59,8 @@ public class GestorController {
     }
     
     @PostMapping("/addingrediente/{id}")
-    public String addIngrediente(@PathVariable("id") Long id, @RequestParam("descripcion") String descripcion) {
+    public String addIngrediente(@PathVariable("id") Long id, 
+                                    @RequestParam("descripcion") String descripcion) {
         IngredienteResponse request = new IngredienteResponse();
         request.setId_receta(id);
         request.setNombr_item(descripcion);
@@ -76,10 +72,42 @@ public class GestorController {
     }
     
     @PostMapping("/editingrediente/{id}")
-    public String editIngrediente(@PathVariable("id") Long id, @RequestParam String action) {
+    public String editIngrediente(@PathVariable("id") Long id, 
+                                    @RequestParam String action) {
+
         if ("editar".equals(action)) {
+
         } else if ("eliminar".equals(action)) {
+
         }
+
+        return "redirect:/editar/" + id;
+    }
+
+    @PostMapping("/editinstruccion/{id}")
+    public String editarInstruccion(@PathVariable Long id, 
+                                    @RequestParam Long instruccionId, 
+                                    @RequestParam String descripcion,
+                                    @RequestParam Integer posicion, 
+                                    @RequestParam String action) {
+        
+        if ("editar".equals(action)) {
+            InstruccionResponse getInstruccion = recetaService.getInstruccionById(instruccionId).block();
+            getInstruccion.setDescripcion(descripcion);
+            getInstruccion.setPosicion(posicion);
+            recetaService.editarInstruccion(getInstruccion);
+        } else if ("eliminar".equals(action)) {
+            recetaService.eliminarInstruccion(instruccionId);
+        }
+        
+        return "redirect:/editar/" + id;
+    }
+
+    @PostMapping("/addinstruccion/{id}")
+    public String agregarInstruccion(@PathVariable Long id, 
+                                        @RequestParam String descripcion,
+                                        @RequestParam Integer posicion) {
+        recetaService.agregarInstruccion(id, descripcion, posicion);
         return "redirect:/editar/" + id;
     }
     
