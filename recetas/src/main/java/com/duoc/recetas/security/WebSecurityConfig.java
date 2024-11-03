@@ -1,4 +1,4 @@
-package com.duoc.recetas;
+package com.duoc.recetas.security;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.context.annotation.Bean;
@@ -19,7 +19,7 @@ public class WebSecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
         http
             .authorizeHttpRequests((requests) -> requests
-                .requestMatchers("/","recetas","busqueda").permitAll()
+                .requestMatchers("/","recetas","busqueda","gestor","editar/**").permitAll()
                 .requestMatchers("/**.css").permitAll()
                 .anyRequest().authenticated()
             )

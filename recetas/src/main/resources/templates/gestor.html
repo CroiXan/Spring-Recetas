@@ -13,7 +13,9 @@
               <h4 class="my-0 fw-normal" th:text="${receta.nombre}">Nombre</h4>
             </div>
             <div class="card-body">
-              <button type="button" class="btn btn-lg btn-primary" th:onclick="|window.location.href='@{/editar(id=${receta.id})}'|">Editar</button>
+              <form th:action="@{/editar/{id}(id=${receta.id_receta})}" method="get">
+                <button class="btn btn-lg btn-primary" type="submit">Editar</button>
+              </form>
             </div>
         </div>
         <button type="button" class="btn btn-lg btn-primary" onclick="window.location.href='/agregar';">Agregar Receta</button>

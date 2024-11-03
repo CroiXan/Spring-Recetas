@@ -1,4 +1,4 @@
-package com.duoc.recetas;
+package com.duoc.recetas.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -38,7 +38,9 @@ public class RecetasController {
 
     @GetMapping("/")
     public String raiz(Model model){
-        model.addAttribute("listarecetas", recetaService.getAllRecetaService());
+        Flux<RecetaResponse> fluxRecetaResponse = recetaService.getAllRecetaService();
+        List<RecetaResponse> listaRecetaResponse = fluxRecetaResponse.collectList().block();
+        model.addAttribute("listarecetas", listaRecetaResponse);
         return "recetas";
     }
     

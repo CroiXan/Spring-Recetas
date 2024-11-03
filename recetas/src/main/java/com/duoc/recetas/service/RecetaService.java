@@ -6,11 +6,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.stream.Collectors;
+
+import com.duoc.recetas.model.IngredienteResponse;
 import com.duoc.recetas.model.Instruccion;
 import com.duoc.recetas.model.Receta;
 import com.duoc.recetas.model.RecetaResponse;
 
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,9 +22,6 @@ import java.util.List;
 public class RecetaService {
     private List<Receta> recetas = new ArrayList<>();
     private Long nextId = 1L;
-
-    @Autowired
-    private ModelMapper mapper;
 
     @Autowired
     private WebClient webClient;
@@ -88,9 +88,18 @@ public class RecetaService {
 
     public Flux<RecetaResponse> getAllRecetaService(){
         Flux<RecetaResponse> listRecetaResponse = webClient.get()
+            .uri("receta")
             .retrieve()
             .bodyToFlux(RecetaResponse.class)
             .switchIfEmpty(Flux.empty());;
         return listRecetaResponse;
+    }
+
+    public Mono<IngredienteResponse> addIngrediente(IngredienteResponse request){
+        return this.webClient.post()
+            .uri("ingredientes")
+            .bodyValue(request)
+            .retrieve()
+            .bodyToMono(IngredienteResponse.class);
     }
 }
