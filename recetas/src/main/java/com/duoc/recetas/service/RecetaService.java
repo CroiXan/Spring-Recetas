@@ -1,8 +1,6 @@
 package com.duoc.recetas.service;
 
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -11,6 +9,7 @@ import java.util.stream.Collectors;
 import com.duoc.recetas.model.IngredienteResponse;
 import com.duoc.recetas.model.Instruccion;
 import com.duoc.recetas.model.InstruccionResponse;
+import com.duoc.recetas.model.NameRequest;
 import com.duoc.recetas.model.Receta;
 import com.duoc.recetas.model.RecetaRequest;
 import com.duoc.recetas.model.RecetaResponse;
@@ -92,6 +91,18 @@ public class RecetaService {
     public Flux<RecetaResponse> getAllRecetaService(){
         Flux<RecetaResponse> listRecetaResponse = webClient.get()
             .uri("receta")
+            .retrieve()
+            .bodyToFlux(RecetaResponse.class)
+            .switchIfEmpty(Flux.empty());
+        return listRecetaResponse;
+    }
+
+    public Flux<RecetaResponse> getRecetasByNameService(String name){
+        NameRequest request = new NameRequest();
+        request.setName(name);
+        Flux<RecetaResponse> listRecetaResponse = webClient.post()
+            .uri("receta/name")
+            .bodyValue(request)
             .retrieve()
             .bodyToFlux(RecetaResponse.class)
             .switchIfEmpty(Flux.empty());

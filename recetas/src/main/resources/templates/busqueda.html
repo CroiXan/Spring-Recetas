@@ -19,11 +19,11 @@
             <hr>
             <h3>Ingredientes</h3>
             <ul>
-                <li th:each="ingrediente : ${receta.ingredientes}" th:text="${ingrediente}">Item</li>
+                <li th:each="ingrediente : ${receta.listaIngredientes}" th:text="${ingrediente.nombr_item}">Item</li>
             </ul>
             <h3>Preparacion</h3>
             <ol>
-                <li th:each="instruccion : ${receta.instrucciones}" th:text="${instruccion.descripcion}">Item</li>
+                <li th:each="instruccion : ${receta.listaInstrucciones}" th:text="${instruccion.descripcion}">Item</li>
             </ol>
             <hr>
         </article>

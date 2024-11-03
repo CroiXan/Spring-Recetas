@@ -4,7 +4,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import com.duoc.recetas.model.Receta;
 import com.duoc.recetas.model.RecetaResponse;
 
 import java.util.List;
@@ -30,8 +29,9 @@ public class RecetasController {
 
     @GetMapping("/busqueda")
     public String busqueda(Model model, @RequestParam(value = "search", required = false) String search){
-        List<Receta> listaRecetas = recetaService.obtenerRecetaPorNombre(search);
-        model.addAttribute("listarecetas", listaRecetas);
+        Flux<RecetaResponse> fluxRecetas = recetaService.getRecetasByNameService(search);
+        List<RecetaResponse> listaRecetaResponse = fluxRecetas.collectList().block();
+        model.addAttribute("listarecetas", listaRecetaResponse);
         model.addAttribute("search", search);
         return "busqueda";
     }
