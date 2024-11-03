@@ -13,11 +13,13 @@
               <h4 class="my-0 fw-normal" th:text="${receta.nombre}">Nombre</h4>
             </div>
             <div class="card-body">
-                <form action="/saveedit" method="post"></form>
+                <form th:action="@{/saveedit}" method="post">
                     <div class="col-md-9">
-                        <label for="nombre" class="form-label">Nombre</label>
-                        <input type="text" class="form-control" id="nombre" placeholder="" required="" th:value="${nombrePreseteado}">
+                        <input type="hidden" name="recetaId" th:value="${receta.id_receta}"/>
+                        <label for="nombreReceta" class="form-label" >Nombre</label>
+                        <input type="text" class="form-control" id="nombreReceta" name="nombreReceta" th:value="${receta.nombre}" required="">
                         <div class="invalid-feedback"></div>
+                        <button type="submit" class="btn btn-lg btn-primary">Cambiar</button>
                     </div>
                 </form>
 
@@ -25,9 +27,9 @@
                 <h4 class="mb-3">Ingredientes</h4>
 
                 <div th:each="ingrediente : ${receta.listaIngredientes}">
-                    <form th:action="@{/addingrediente/{id}(id=${receta.id_receta})}" method="post">
+                    <form th:action="@{/editingrediente/{id}(id=${receta.id_receta})}" method="post">
                         <div class="col-md-9">
-                            <input type="hidden" name="id" th:value="${ingrediente.id_ingrediente}"/>
+                            <input type="hidden" name="ingredienteId" th:value="${ingrediente.id_ingrediente}"/>
                             <label for="descripcion" class="form-label">Descripcion</label>
                             <input type="text" class="form-control" id="descripcion" name="descripcion" th:value="${ingrediente.nombr_item}" required="">
                             <div class="invalid-feedback"></div>

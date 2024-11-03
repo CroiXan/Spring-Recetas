@@ -60,8 +60,8 @@ public class InstruccionController {
 
     @PutMapping("/{id}")
     public ResponseEntity<Instruccion> updateInstruccion(@PathVariable Long id, @RequestBody Instruccion updatedInstruccion ) {
-        recetaService.getRecetaById(id)
-            .orElseThrow(() -> new ResourceNotFoundException("Receta con ID "+ id +" no se encuentra"));
+        recetaService.getRecetaById(updatedInstruccion.getId_receta())
+            .orElseThrow(() -> new ResourceNotFoundException("Receta con ID "+ updatedInstruccion.getId_receta() +" no se encuentra"));
         Instruccion instruccion = instruccionService.getInstruccionById(id)
             .orElseThrow(() -> new ResourceNotFoundException("Instruccion con ID "+ id +" no se encuentra"));
         instruccion.setId_receta(updatedInstruccion.getId_receta());

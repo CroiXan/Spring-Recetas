@@ -12,6 +12,7 @@ import com.duoc.recetas.model.IngredienteResponse;
 import com.duoc.recetas.model.Instruccion;
 import com.duoc.recetas.model.InstruccionResponse;
 import com.duoc.recetas.model.Receta;
+import com.duoc.recetas.model.RecetaRequest;
 import com.duoc.recetas.model.RecetaResponse;
 
 import reactor.core.publisher.Flux;
@@ -106,6 +107,18 @@ public class RecetaService {
         return recetaResponse;
     }
 
+    public void editarReceta(RecetaResponse receta) {
+        RecetaRequest request = new RecetaRequest();
+        request.setId_receta(receta.getId_receta());
+        request.setNombre(receta.getNombre());
+        this.webClient.put()
+            .uri("receta/{id}",request.getId_receta())
+            .bodyValue(request)
+            .retrieve()
+            .bodyToMono(RecetaResponse.class)
+            .block();
+    }
+
     public Mono<InstruccionResponse> getInstruccionById(Long instruccionId){
         Mono<InstruccionResponse> instruccionResponse = webClient.get()
             .uri("instrucciones/{id}",instruccionId)
@@ -132,6 +145,15 @@ public class RecetaService {
             .bodyToMono(IngredienteResponse.class);
     }
 
+    public void editarIngrediente(IngredienteResponse request) {
+        this.webClient.put()
+            .uri("ingredientes/{id}",request.getId_ingrediente())
+            .bodyValue(request)
+            .retrieve()
+            .bodyToMono(IngredienteResponse.class)
+            .block();
+    }
+
     public void eliminarIngrediente(Long ingredienteId) {
         this.webClient.delete()
             .uri("ingredientes/{id}",ingredienteId)
@@ -146,7 +168,7 @@ public class RecetaService {
             .bodyValue(request)
             .retrieve()
             .bodyToMono(InstruccionResponse.class)
-            .block();;
+            .block();
     }
     
     public void eliminarInstruccion(Long instruccionId) {

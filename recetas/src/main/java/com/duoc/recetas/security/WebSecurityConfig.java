@@ -19,7 +19,7 @@ public class WebSecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
         http
             .authorizeHttpRequests((requests) -> requests
-                .requestMatchers("/","recetas","busqueda","gestor","editar/**").permitAll()
+                .requestMatchers("/","recetas","busqueda","gestor","editar/**","/saveedit").permitAll()
                 .requestMatchers("/**.css").permitAll()
                 .anyRequest().authenticated()
             )

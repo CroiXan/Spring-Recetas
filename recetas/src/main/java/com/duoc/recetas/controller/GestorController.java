@@ -53,9 +53,12 @@ public class GestorController {
     }
 
     @PostMapping("/saveedit")
-    public String guardarEditar(Model model) {
-
-        return "gestor";
+    public String guardarEditar(@RequestParam("recetaId") Long recetaId, 
+                                @RequestParam("nombreReceta") String nombreReceta) {
+        RecetaResponse getReceta = recetaService.getRecetaById(recetaId).block();
+        getReceta.setNombre(nombreReceta);
+        recetaService.editarReceta(getReceta);
+        return "redirect:/editar/" + recetaId;
     }
     
     @PostMapping("/addingrediente/{id}")
@@ -72,13 +75,17 @@ public class GestorController {
     }
     
     @PostMapping("/editingrediente/{id}")
-    public String editIngrediente(@PathVariable("id") Long id, 
+    public String editIngrediente(@PathVariable("id") Long id,
+                                    @RequestParam Long ingredienteId, 
+                                    @RequestParam String descripcion,
                                     @RequestParam String action) {
 
         if ("editar".equals(action)) {
-
+            IngredienteResponse getIngrediente = recetaService.getIngredienteById(ingredienteId).block();
+            getIngrediente.setNombr_item(descripcion);
+            recetaService.editarIngrediente(getIngrediente);
         } else if ("eliminar".equals(action)) {
-
+            recetaService.eliminarIngrediente(ingredienteId);
         }
 
         return "redirect:/editar/" + id;
