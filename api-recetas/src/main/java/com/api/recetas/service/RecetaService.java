@@ -30,7 +30,7 @@ public class RecetaService {
     private InstruccionRepository instruccionRepository;
 
     public List<FullReceta> getAllReceta(){
-        return this.buildFullRecetasList();
+        return this.buildFullRecetasList("");
     }
 
     public Optional<Receta> getRecetaById(Long id){
@@ -43,6 +43,10 @@ public class RecetaService {
 
     public void deleteRecetaById(Long id){
         recetaRepository.deleteById(id);
+    }
+
+    public List<FullReceta> findRecetaByName(String nombre){
+        return this.buildFullRecetasList(nombre);
     }
 
     public Optional<FullReceta> getFullRecetabyId(Long id){
@@ -64,9 +68,14 @@ public class RecetaService {
         return Optional.empty();
     }
 
-    private List<FullReceta> buildFullRecetasList(){
+    private List<FullReceta> buildFullRecetasList(String name){
         List<FullReceta> listaRecetas = new ArrayList<FullReceta>();
-        List<Receta> recetas = recetaRepository.findAll();
+        List<Receta> recetas = new ArrayList<Receta>();
+        if ("" == name) {
+            recetas = recetaRepository.findAll();
+        }else{
+            recetas = recetaRepository.findByLikeNombre(name);
+        }
         List<Ingrediente> ingredientes = ingredienteRepository.findAll();
         List<Instruccion> instrucciones = instruccionRepository.findAll();
 

@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.api.recetas.exception.ResourceNotFoundException;
 import com.api.recetas.model.FullReceta;
+import com.api.recetas.model.NameRequest;
 import com.api.recetas.model.Receta;
 import com.api.recetas.service.RecetaService;
 
@@ -60,5 +61,11 @@ public class RecetaController {
         receta.setNombre(updatedReceta.getNombre());
         Receta resulReceta = recetaService.saveReceta(receta);
         return ResponseEntity.ok(resulReceta);
+    }
+    
+    @PostMapping("/name")
+    public ResponseEntity<List<FullReceta>> findRecetaByName(@RequestBody NameRequest request) {
+        List<FullReceta> receta = recetaService.findRecetaByName(request.getName());
+        return ResponseEntity.ok(receta);
     }
 }
