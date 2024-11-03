@@ -86,6 +86,8 @@ public class RecetaService {
             localFullReceta.setNombre(receta.getNombre());
             localFullReceta.setListaIngredientes(localIngredientes);
             localFullReceta.setListaInstrucciones(localInstrucciones);
+
+            listaRecetas.add(localFullReceta);
         }
 
         return listaRecetas;

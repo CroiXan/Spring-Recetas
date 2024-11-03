@@ -5,8 +5,12 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import com.duoc.recetas.model.Receta;
+import com.duoc.recetas.model.RecetaResponse;
+
 import java.util.List;
 import com.duoc.recetas.service.RecetaService;
+
+import reactor.core.publisher.Flux;
 
 @Controller
 public class RecetasController {
@@ -18,7 +22,9 @@ public class RecetasController {
     
     @GetMapping("/recetas")
     public String recetas(Model model){
-        model.addAttribute("listarecetas", recetaService.obtenerRecetas());
+        Flux<RecetaResponse> fluxRecetaResponse = recetaService.getAllRecetaService();
+        List<RecetaResponse> listaRecetaResponse = fluxRecetaResponse.collectList().block();
+        model.addAttribute("listarecetas", listaRecetaResponse);
         return "recetas";
     }
 
@@ -32,7 +38,7 @@ public class RecetasController {
 
     @GetMapping("/")
     public String raiz(Model model){
-        model.addAttribute("listarecetas", recetaService.obtenerRecetas());
+        model.addAttribute("listarecetas", recetaService.getAllRecetaService());
         return "recetas";
     }
     
