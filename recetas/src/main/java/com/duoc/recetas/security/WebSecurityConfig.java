@@ -48,7 +48,7 @@ public class WebSecurityConfig {
                 ))
             )
             .authorizeHttpRequests((requests) -> requests
-                .requestMatchers("/","recetas","busqueda").permitAll()
+                .requestMatchers("/","recetas","busqueda","/error").permitAll()
                 .requestMatchers("/**.css").permitAll()
                 .requestMatchers("/**/.darcs/**", "/**/.bzr/**", "/**/.hg/**", "/**/BitKeeper/**").denyAll()
                 .anyRequest().authenticated()
