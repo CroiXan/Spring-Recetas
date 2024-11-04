@@ -1,7 +1,11 @@
 package com.duoc.recetas.security;
 
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -16,8 +20,12 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import com.duoc.recetas.model.UserLogin;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.security.Keys;
 import reactor.core.publisher.Mono;
 
 @Component
@@ -25,7 +33,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
 
     private TokenStore tokenStore;
 
-    private static final String SECRET_KEY = "586E3272357538782F413F4428472B4B6250655368566B597033733676397924";
+    private static final String SECRET_KEY = "ZnJhc2VzbGFyZ2FzcGFyYWNvbG9jYXJjb21vY2xhdmVlbnVucHJvamVjdG9kZWVtZXBsb3BhcmFqd3Rjb25zcHJpbmdzZWN1cml0eQ==bWlwcnVlYmFkZWVqbXBsb3BhcmFiYXNlNjQ=";
 
     public CustomAuthenticationProvider(TokenStore tokenStore) {
         super();
@@ -68,6 +76,13 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
         Gson gson = new Gson();
         TokenStore tokenResponse = gson.fromJson(response, TokenStore.class);
 
+        Map<String, Object> claims = decodeJWT(tokenResponse.getToken());
+
+        String role = (String) claims.get("role");
+        System.out.println("Token role: " + role);
+        List<SimpleGrantedAuthority> authorities = new ArrayList<>();
+        authorities.add(new SimpleGrantedAuthority("ROLE_" +role));
+
         System.out.println("Response Entity: " + tokenResponse.getToken());//responseEntity);
 
         tokenStore.setToken(tokenResponse.getToken());//responseEntity.getBody());
@@ -77,21 +92,6 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
         //if (responseEntity.getStatusCode() != HttpStatus.OK) {
             // new BadCredentialsException("Invalid username or password");
         //}
-
-        List authorities = new ArrayList<>();
-        authorities.add(new SimpleGrantedAuthority("USER"));
-
-        /*Claims claims = Jwts.parserBuilder()
-                    .setSigningKey(Keys.hmacShaKeyFor(SECRET_KEY.getBytes(StandardCharsets.UTF_8)))
-                    .build()
-                    .parseClaimsJws(tokenStore.getToken())
-                    .getBody();
-
-            // Obtener el rol del claim
-        String role = claims.get("role", String.class); // 'role' es el nombre del claim que contiene el rol
-
-            // Crear la lista de autoridades
-        List<SimpleGrantedAuthority> authorities = Collections.singletonList(new SimpleGrantedAuthority(role));*/
 
         Authentication authenticatedToken = new UsernamePasswordAuthenticationToken(name, password, authorities);
 
@@ -103,4 +103,22 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
         return authentication.equals(UsernamePasswordAuthenticationToken.class);
     }
 
+    private Map<String, Object> decodeJWT(String token) {
+    String[] parts = token.split("\\."); // Divide el JWT en sus tres partes
+    String payload = parts[1]; // El payload es la segunda parte
+
+    // Decodifica el payload de Base64 a una cadena JSON
+    byte[] decodedBytes = Base64.getDecoder().decode(payload);
+    String decodedPayload = new String(decodedBytes);
+
+    // Convierte la cadena JSON en un mapa para acceder a los claims
+    ObjectMapper mapper = new ObjectMapper();
+    Map<String, Object> claims = null;
+    try {
+        claims = mapper.readValue(decodedPayload, Map.class);
+    } catch (IOException e) {
+        e.printStackTrace();
+    }
+    return claims;
+}
 }
