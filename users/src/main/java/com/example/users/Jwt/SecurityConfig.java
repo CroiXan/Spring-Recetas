@@ -6,6 +6,7 @@ import java.util.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -47,6 +48,10 @@ public class SecurityConfig {
                 .and().csrf().disable()
                 .authorizeHttpRequests()
                 .requestMatchers("/user/login", "/user/signup", "/user/forgotPassword","/error","/user/checkToken").permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/receta/**").permitAll()
+                .requestMatchers(HttpMethod.POST, "/api/receta/**").permitAll()
+                .requestMatchers(HttpMethod.PUT, "/api/receta/**").permitAll()
+                .requestMatchers(HttpMethod.DELETE, "/api/receta/**").permitAll()
                 .anyRequest().authenticated()
                 .and().exceptionHandling()
                 .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
