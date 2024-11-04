@@ -13,6 +13,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.header.writers.StaticHeadersWriter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration
@@ -33,9 +34,23 @@ public class WebSecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
         http
+            .headers(headers -> headers
+                .addHeaderWriter(new StaticHeadersWriter("Content-Security-Policy", 
+                    "default-src 'self'; " +
+                    "script-src 'self' cdn.jsdelivr.net; " +
+                    "style-src 'self' cdn.jsdelivr.net; " +
+                    "img-src 'self' data:; " +
+                    "connect-src 'self'; " +
+                    "font-src 'self'; " +
+                    "object-src 'none'; " +
+                    "frame-ancestors 'none';" +
+                    "form-action 'self';"
+                ))
+            )
             .authorizeHttpRequests((requests) -> requests
                 .requestMatchers("/","recetas","busqueda").permitAll()
                 .requestMatchers("/**.css").permitAll()
+                .requestMatchers("/**/.darcs/**", "/**/.bzr/**", "/**/.hg/**", "/**/BitKeeper/**").denyAll()
                 .anyRequest().authenticated()
             )
             .formLogin((form) -> form
