@@ -16,7 +16,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.google.common.base.Strings;
-import com.example.users.constants.CafeConstant;
+import com.example.users.constants.Constant;
 import com.example.users.dao.UserDao;
 import com.example.users.Jwt.CustomerUserDetailsService;
 import com.example.users.Jwt.JwtFilter;
@@ -60,19 +60,19 @@ public class UserServiceImpl implements UserService {
                 User user = userDao.findByEmailId(requestMap.get("email"));
                 if (Objects.isNull(user)) {
                     userDao.save(getUserFromMap(requestMap));
-                    return Util.getResponseEntity(CafeConstant.SUCESS_REGISTER, HttpStatus.OK);
+                    return Util.getResponseEntity(Constant.SUCESS_REGISTER, HttpStatus.OK);
 
                 } else {
-                    return Util.getResponseEntity(CafeConstant.EMAIL_ALREADY_EXISTS, HttpStatus.BAD_REQUEST);
+                    return Util.getResponseEntity(Constant.EMAIL_ALREADY_EXISTS, HttpStatus.BAD_REQUEST);
                 }
             } else {
                 log.error("Invalid request map");
-                return Util.getResponseEntity(CafeConstant.INVALID_DATA, HttpStatus.BAD_REQUEST);
+                return Util.getResponseEntity(Constant.INVALID_DATA, HttpStatus.BAD_REQUEST);
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return Util.getResponseEntity(CafeConstant.SOMETHING_WENT_WRONG, HttpStatus.INTERNAL_SERVER_ERROR);
+        return Util.getResponseEntity(Constant.SOMETHING_WENT_WRONG, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     private boolean validateSignUpMap(Map<String, String> requestMap) {
@@ -152,12 +152,12 @@ public class UserServiceImpl implements UserService {
                     userDao.save(userObj);
                     return Util.getResponseEntity("Password changed successfully", HttpStatus.OK);
                 }
-                return Util.getResponseEntity(CafeConstant.INCORRECT_PASSWORD, HttpStatus.BAD_REQUEST);
+                return Util.getResponseEntity(Constant.INCORRECT_PASSWORD, HttpStatus.BAD_REQUEST);
             }
-            return Util.getResponseEntity(CafeConstant.SOMETHING_WENT_WRONG, HttpStatus.INTERNAL_SERVER_ERROR);
+            return Util.getResponseEntity(Constant.SOMETHING_WENT_WRONG, HttpStatus.INTERNAL_SERVER_ERROR);
         } catch (Exception e) {
             e.printStackTrace();
-            return Util.getResponseEntity(CafeConstant.SOMETHING_WENT_WRONG, HttpStatus.INTERNAL_SERVER_ERROR);
+            return Util.getResponseEntity(Constant.SOMETHING_WENT_WRONG, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 

@@ -9,7 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.users.constants.CafeConstant;
+import com.example.users.constants.Constant;
 import com.example.users.service.UserService;
 import com.example.users.utils.Util;
 import com.example.users.wrapper.UserWrapper;
@@ -29,7 +29,7 @@ public class UserRestImpl implements UserRest {
             e.printStackTrace();
         }
 
-        return Util.getResponseEntity(CafeConstant.SOMETHING_WENT_WRONG, HttpStatus.INTERNAL_SERVER_ERROR);
+        return Util.getResponseEntity(Constant.SOMETHING_WENT_WRONG, HttpStatus.INTERNAL_SERVER_ERROR);
 
     }
 
@@ -40,7 +40,7 @@ public class UserRestImpl implements UserRest {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return Util.getResponseEntity(CafeConstant.SOMETHING_WENT_WRONG, HttpStatus.INTERNAL_SERVER_ERROR);
+        return Util.getResponseEntity(Constant.SOMETHING_WENT_WRONG, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @Override
@@ -61,7 +61,7 @@ public class UserRestImpl implements UserRest {
     //     } catch (Exception e) {
     //         e.printStackTrace();
     //     }
-    //     return Util.getResponseEntity(CafeConstant.SOMETHING_WENT_WRONG, HttpStatus.INTERNAL_SERVER_ERROR);
+    //     return Util.getResponseEntity(Constant.SOMETHING_WENT_WRONG, HttpStatus.INTERNAL_SERVER_ERROR);
     // }
 
     @Override
@@ -71,7 +71,7 @@ public class UserRestImpl implements UserRest {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return Util.getResponseEntity(CafeConstant.SOMETHING_WENT_WRONG, HttpStatus.INTERNAL_SERVER_ERROR);
+        return Util.getResponseEntity(Constant.SOMETHING_WENT_WRONG, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @Override
@@ -81,7 +81,7 @@ public class UserRestImpl implements UserRest {
         }catch (Exception e){
             e.printStackTrace();
         }
-        return Util.getResponseEntity(CafeConstant.SOMETHING_WENT_WRONG, HttpStatus.INTERNAL_SERVER_ERROR);
+        return Util.getResponseEntity(Constant.SOMETHING_WENT_WRONG, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     // @Override
@@ -92,7 +92,7 @@ public class UserRestImpl implements UserRest {
     //         e.printStackTrace();
     //     }    
 
-    //     return Util.getResponseEntity(CafeConstant.SOMETHING_WENT_WRONG, HttpStatus.INTERNAL_SERVER_ERROR);
+    //     return Util.getResponseEntity(Constant.SOMETHING_WENT_WRONG, HttpStatus.INTERNAL_SERVER_ERROR);
     
     // }
 }
