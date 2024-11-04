@@ -1,6 +1,9 @@
 package com.duoc.recetas.security;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.userdetails.User;
@@ -15,11 +18,22 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableWebSecurity
 public class WebSecurityConfig {
 
+    @Autowired
+    private CustomAuthenticationProvider authProvider;
+
+    @Bean
+    public AuthenticationManager authenticationManager(HttpSecurity http) throws Exception {
+        AuthenticationManagerBuilder authenticationManagerBuilder =
+            http.getSharedObject(AuthenticationManagerBuilder.class);
+        authenticationManagerBuilder.authenticationProvider(authProvider);
+        return authenticationManagerBuilder.build();
+    }
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
         http
             .authorizeHttpRequests((requests) -> requests
-                .requestMatchers("/","recetas","busqueda","gestor","editar/**","/saveedit").permitAll()
+                .requestMatchers("/","recetas","busqueda").permitAll()
                 .requestMatchers("/**.css").permitAll()
                 .anyRequest().authenticated()
             )
@@ -27,7 +41,12 @@ public class WebSecurityConfig {
                 .loginPage("/login")
                 .permitAll()
             )
-            .logout((logout) -> logout.permitAll());
+            .logout((logout) -> logout
+                .logoutUrl("/logout")
+                .logoutSuccessUrl("/login?logout")
+                .invalidateHttpSession(true)
+                .deleteCookies("JSESSIONID")
+                .permitAll());
 
         return http.build();
     }
@@ -49,6 +68,7 @@ public class WebSecurityConfig {
             .password(passwordEncoder().encode("admin1"))
             .roles("ADMIN","USER")
             .build();
+            
         return new InMemoryUserDetailsManager(usuario1,usuario2,admin);
     }
 
