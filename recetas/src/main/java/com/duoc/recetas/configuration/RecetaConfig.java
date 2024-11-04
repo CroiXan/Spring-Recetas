@@ -29,4 +29,16 @@ public class RecetaConfig {
                 headers.set("Authorization", "Basic " + encodedAuth);
             }).baseUrl(recetaBaseURL).build();
     }
+
+    @Bean
+    public WebClient.Builder webClientBuilder() {
+        return WebClient.builder().baseUrl("http://localhost:8082/api/");
+    }
+    
+    public WebClient webClientWithJwt(String jwtToken) {
+        return webClientBuilder()
+                .defaultHeader("Authorization", "Bearer " + jwtToken)
+                .build();
+    }
+
 }

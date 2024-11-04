@@ -6,6 +6,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.stream.Collectors;
 
+import com.duoc.recetas.configuration.RecetaConfig;
 import com.duoc.recetas.model.IngredienteResponse;
 import com.duoc.recetas.model.Instruccion;
 import com.duoc.recetas.model.InstruccionResponse;
@@ -13,6 +14,9 @@ import com.duoc.recetas.model.NameRequest;
 import com.duoc.recetas.model.Receta;
 import com.duoc.recetas.model.RecetaRequest;
 import com.duoc.recetas.model.RecetaResponse;
+import com.duoc.recetas.model.UserLogin;
+import com.duoc.recetas.security.TokenStore;
+import com.google.gson.Gson;
 
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -25,10 +29,15 @@ public class RecetaService {
     private List<Receta> recetas = new ArrayList<>();
     private Long nextId = 1L;
 
+    private TokenStore tokenStore = new TokenStore();
+
+    private RecetaConfig recetaConfig = new RecetaConfig();
+
     @Autowired
     private WebClient webClient;
 
     public RecetaService(){
+        tokenStore.setToken("");
         List<String> ingredientes1 = new ArrayList<>();
         ingredientes1.add("1 kg. Choqlillo ");
         ingredientes1.add("400 gr. Cebolla ");
@@ -89,6 +98,8 @@ public class RecetaService {
     }
 
     public Flux<RecetaResponse> getAllRecetaService(){
+        getToken();
+        WebClient webClient = recetaConfig.webClientWithJwt(tokenStore.getToken());
         Flux<RecetaResponse> listRecetaResponse = webClient.get()
             .uri("receta")
             .retrieve()
@@ -98,6 +109,8 @@ public class RecetaService {
     }
 
     public Flux<RecetaResponse> getRecetasByNameService(String name){
+        getToken();
+        WebClient webClient = recetaConfig.webClientWithJwt(tokenStore.getToken());
         NameRequest request = new NameRequest();
         request.setName(name);
         Flux<RecetaResponse> listRecetaResponse = webClient.post()
@@ -110,7 +123,9 @@ public class RecetaService {
     }
 
     public Mono<RecetaRequest> addReceta(RecetaRequest request){
-        return this.webClient.post()
+        getToken();
+        WebClient webClient = recetaConfig.webClientWithJwt(tokenStore.getToken());
+        return webClient.post()
             .uri("receta")
             .bodyValue(request)
             .retrieve()
@@ -119,6 +134,8 @@ public class RecetaService {
     }
 
     public Mono<RecetaResponse> getRecetaById(Long recetaId){
+        getToken();
+        WebClient webClient = recetaConfig.webClientWithJwt(tokenStore.getToken());
         Mono<RecetaResponse> recetaResponse = webClient.get()
             .uri("receta/{id}",recetaId)
             .retrieve()
@@ -128,10 +145,12 @@ public class RecetaService {
     }
 
     public void editarReceta(RecetaResponse receta) {
+        getToken();
+        WebClient webClient = recetaConfig.webClientWithJwt(tokenStore.getToken());
         RecetaRequest request = new RecetaRequest();
         request.setId_receta(receta.getId_receta());
         request.setNombre(receta.getNombre());
-        this.webClient.put()
+        webClient.put()
             .uri("receta/{id}",request.getId_receta())
             .bodyValue(request)
             .retrieve()
@@ -140,6 +159,8 @@ public class RecetaService {
     }
 
     public Mono<InstruccionResponse> getInstruccionById(Long instruccionId){
+        getToken();
+        WebClient webClient = recetaConfig.webClientWithJwt(tokenStore.getToken());
         Mono<InstruccionResponse> instruccionResponse = webClient.get()
             .uri("instrucciones/{id}",instruccionId)
             .retrieve()
@@ -149,6 +170,8 @@ public class RecetaService {
     }
 
     public Mono<IngredienteResponse> getIngredienteById(Long ingredienteId){
+        getToken();
+        WebClient webClient = recetaConfig.webClientWithJwt(tokenStore.getToken());
         Mono<IngredienteResponse> ingredienteResponse = webClient.get()
             .uri("ingredientes/{id}",ingredienteId)
             .retrieve()
@@ -158,7 +181,9 @@ public class RecetaService {
     }
 
     public Mono<IngredienteResponse> addIngrediente(IngredienteResponse request){
-        return this.webClient.post()
+        getToken();
+        WebClient webClient = recetaConfig.webClientWithJwt(tokenStore.getToken());
+        return webClient.post()
             .uri("ingredientes")
             .bodyValue(request)
             .retrieve()
@@ -166,7 +191,9 @@ public class RecetaService {
     }
 
     public void editarIngrediente(IngredienteResponse request) {
-        this.webClient.put()
+        getToken();
+        WebClient webClient = recetaConfig.webClientWithJwt(tokenStore.getToken());
+        webClient.put()
             .uri("ingredientes/{id}",request.getId_ingrediente())
             .bodyValue(request)
             .retrieve()
@@ -175,7 +202,9 @@ public class RecetaService {
     }
 
     public void eliminarIngrediente(Long ingredienteId) {
-        this.webClient.delete()
+        getToken();
+        WebClient webClient = recetaConfig.webClientWithJwt(tokenStore.getToken());
+        webClient.delete()
             .uri("ingredientes/{id}",ingredienteId)
             .retrieve()
             .bodyToMono(Void.class)
@@ -183,7 +212,9 @@ public class RecetaService {
     }
 
     public void editarInstruccion(InstruccionResponse request) {
-        this.webClient.put()
+        getToken();
+        WebClient webClient = recetaConfig.webClientWithJwt(tokenStore.getToken());
+        webClient.put()
             .uri("instrucciones/{id}",request.getId_instruccion())
             .bodyValue(request)
             .retrieve()
@@ -192,7 +223,9 @@ public class RecetaService {
     }
     
     public void eliminarInstruccion(Long instruccionId) {
-        this.webClient.delete()
+        getToken();
+        WebClient webClient = recetaConfig.webClientWithJwt(tokenStore.getToken());
+        webClient.delete()
             .uri("instrucciones/{id}",instruccionId)
             .retrieve()
             .bodyToMono(Void.class)
@@ -200,15 +233,35 @@ public class RecetaService {
     }
     
     public void agregarInstruccion(Long recetaId, String descripcion, int posicion) {
+        getToken();
+        WebClient webClient = recetaConfig.webClientWithJwt(tokenStore.getToken());
         InstruccionResponse request = new InstruccionResponse();
         request.setId_receta(recetaId);
         request.setDescripcion(descripcion);
         request.setPosicion(posicion);
-        this.webClient.post()
+        webClient.post()
             .uri("instrucciones")
             .bodyValue(request)
             .retrieve()
             .bodyToMono(InstruccionResponse.class)
             .block();
+    }
+
+    private void getToken(){
+        if(this.tokenStore.getToken().isEmpty()){
+            WebClient webClient = WebClient.builder().baseUrl("http://localhost:8082/user/login").build();
+        UserLogin loginRequest = new UserLogin();
+        loginRequest.setEmail("test");
+        loginRequest.setPassword("test");
+        String response = webClient.post()
+            .bodyValue(loginRequest)
+            .retrieve()
+            .bodyToMono(String.class)
+            .switchIfEmpty(Mono.empty())
+            .block();
+
+        Gson gson = new Gson();
+        this.tokenStore = gson.fromJson(response, TokenStore.class);
+        }
     }
 }
