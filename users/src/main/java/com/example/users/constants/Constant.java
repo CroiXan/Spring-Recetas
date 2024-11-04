@@ -1,6 +1,6 @@
 package com.example.users.constants;
 
-public class CafeConstant {
+public class Constant {
     
     public static final String USER_NOT_FOUND = "User not found";
     public static final String SOMETHING_WENT_WRONG = "Something went wrong";
@@ -13,5 +13,4 @@ public class CafeConstant {
     public static final String CATEGORY_ADDED = "Category Added Successfully";
     public static final String CATEGORY_UPDATED = "Category Updated Successfully";
     public static final String SUCCESS_UPDATE_PRODUCT = "Product Status Updated Successfully";
-    public static final String STORAGE_LOCATION = "C:\\Apps\\duoc\\cafemanagamentsystem\\DOC";
 }
