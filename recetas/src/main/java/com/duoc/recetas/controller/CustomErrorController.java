@@ -8,13 +8,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 @Controller
 public class CustomErrorController implements ErrorController {
 
     @RequestMapping("/error")
     @ResponseStatus(HttpStatus.OK)
-    public String handleError(HttpServletRequest request, Model model) {
+    public String handleError(HttpServletRequest request, HttpServletResponse response, Model model) {
         Integer statusCode = (Integer) request.getAttribute("javax.servlet.error.status_code");
         
         String errorMessage;
@@ -25,6 +26,8 @@ public class CustomErrorController implements ErrorController {
         } else {
             errorMessage = "Ocurrió un error inesperado";
         }
+
+        response.setStatus(HttpServletResponse.SC_OK);
         
         model.addAttribute("errorMessage", errorMessage);
         model.addAttribute("statusCode", statusCode);
