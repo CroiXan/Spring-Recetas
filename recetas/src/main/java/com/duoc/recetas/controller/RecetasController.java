@@ -5,6 +5,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import com.duoc.recetas.model.RecetaResponse;
+import com.duoc.recetas.security.SeguridadUtil;
 
 import java.util.List;
 import com.duoc.recetas.service.RecetaService;
@@ -29,6 +30,7 @@ public class RecetasController {
 
     @GetMapping("/busqueda")
     public String busqueda(Model model, @RequestParam(value = "search", required = false) String search){
+        //String sanitizedSearch = SeguridadUtil.sanitizarParaHTML(search);
         Flux<RecetaResponse> fluxRecetas = recetaService.getRecetasByNameService(search);
         List<RecetaResponse> listaRecetaResponse = fluxRecetas.collectList().block();
         model.addAttribute("listarecetas", listaRecetaResponse);

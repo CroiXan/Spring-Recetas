@@ -26,8 +26,6 @@ public class CustomErrorController implements ErrorController {
         } else {
             errorMessage = "Ocurrió un error inesperado";
         }
-
-        response.setStatus(HttpServletResponse.SC_OK);
         
         model.addAttribute("errorMessage", errorMessage);
         model.addAttribute("statusCode", statusCode);
