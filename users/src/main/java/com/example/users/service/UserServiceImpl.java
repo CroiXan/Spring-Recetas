@@ -72,7 +72,7 @@ public class UserServiceImpl implements UserService {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return Util.getResponseEntity(Constant.SOMETHING_WENT_WRONG, HttpStatus.INTERNAL_SERVER_ERROR);
+        return Util.getResponseEntity(Constant.SOMETHING_WENT_WRONG, HttpStatus.UNPROCESSABLE_ENTITY);
     }
 
     private boolean validateSignUpMap(Map<String, String> requestMap) {
@@ -132,7 +132,7 @@ public class UserServiceImpl implements UserService {
             e.printStackTrace();
         }
 
-        return new ResponseEntity<>(new ArrayList<>(), HttpStatus.INTERNAL_SERVER_ERROR);
+        return new ResponseEntity<>(new ArrayList<>(), HttpStatus.UNPROCESSABLE_ENTITY);
     }
 
 
@@ -154,10 +154,10 @@ public class UserServiceImpl implements UserService {
                 }
                 return Util.getResponseEntity(Constant.INCORRECT_PASSWORD, HttpStatus.BAD_REQUEST);
             }
-            return Util.getResponseEntity(Constant.SOMETHING_WENT_WRONG, HttpStatus.INTERNAL_SERVER_ERROR);
+            return Util.getResponseEntity(Constant.SOMETHING_WENT_WRONG, HttpStatus.UNPROCESSABLE_ENTITY);
         } catch (Exception e) {
             e.printStackTrace();
-            return Util.getResponseEntity(Constant.SOMETHING_WENT_WRONG, HttpStatus.INTERNAL_SERVER_ERROR);
+            return Util.getResponseEntity(Constant.SOMETHING_WENT_WRONG, HttpStatus.UNPROCESSABLE_ENTITY);
         }
     }
 
