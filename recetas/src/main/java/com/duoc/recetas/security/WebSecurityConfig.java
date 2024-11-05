@@ -49,6 +49,14 @@ public class WebSecurityConfig {
             )
             .authorizeHttpRequests((requests) -> requests
                 .requestMatchers("/","recetas","busqueda","/error").permitAll()
+                .requestMatchers("/gestor",
+                                "/editar/**",
+                                "/agregarreceta",
+                                "/saveedit",
+                                "/addingrediente/**",
+                                "/editingrediente/**",
+                                "/editinstruccion/**",
+                                "/addinstruccion/**").hasRole("ADMIN")
                 .requestMatchers("/**.css").permitAll()
                 .requestMatchers("/**/.darcs/**", "/**/.bzr/**", "/**/.hg/**", "/**/BitKeeper/**").denyAll()
                 .anyRequest().authenticated()
