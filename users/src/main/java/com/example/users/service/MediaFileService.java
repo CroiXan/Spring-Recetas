@@ -1,7 +1,9 @@
 package com.example.users.service;
 
 import java.io.IOException;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -35,7 +37,9 @@ public class MediaFileService {
     }
 
     public List<MediaFile> getAllFilesByRecetaId(Long idReceta) {
-        return repository.findById_receta(idReceta);
+        return repository.findById_receta(idReceta).stream()
+                .sorted(Comparator.comparingLong(MediaFile::getId).reversed())
+                .collect(Collectors.toList());
     }
 
     public MediaFile getFile(Long id) {
