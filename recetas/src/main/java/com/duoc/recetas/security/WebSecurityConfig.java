@@ -48,11 +48,12 @@ public class WebSecurityConfig {
                 ))
             )
             .authorizeHttpRequests((requests) -> requests
-                .requestMatchers("/","recetas","busqueda","/error").permitAll()
+                .requestMatchers("/","/recetas","busqueda","/error").permitAll()
                 .requestMatchers("/gestor",
                                 "/editar/**",
                                 "/agregarreceta",
                                 "/saveedit",
+                                "/savefile",
                                 "/addingrediente/**",
                                 "/editingrediente/**",
                                 "/editinstruccion/**",

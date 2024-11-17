@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface MediaFileRepository extends JpaRepository<MediaFile, Long> {
 
-    @Query("SELECT mf FROM media_file mf WHERE mf.id_receta = :id_receta")
+    @Query("SELECT mefi FROM MediaFile mefi WHERE mefi.id_receta = :id_receta")
     List<MediaFile> findById_receta(Long id_receta);
 
 }

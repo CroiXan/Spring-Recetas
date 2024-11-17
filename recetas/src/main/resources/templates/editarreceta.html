@@ -24,6 +24,27 @@
                     </div>
                 </form>
 
+                <form th:action="@{/savefile}" method="post"  enctype="multipart/form-data">
+                    <div class="col-md-9">
+                        <input type="hidden" name="recetaId" th:value="${receta.id_receta}"/>
+                        <div>
+                            <label for="nombre">Nombre:</label>
+                            <input type="text" id="nombre" th:field="*{nombre}" required>
+                        </div>
+                        <div>
+                            <label for="descripcion">Descripción:</label>
+                            <textarea id="descripcion" th:field="*{descripcion}" required></textarea>
+                        </div>
+                        <div>
+                            <label for="archivo" class="form-label">Subir Archivo:</label>
+                            <input type="file" id="archivo" name="archivo"  class="form-control">
+                        </div>
+                        
+                        <div class="invalid-feedback"></div>
+                        <button type="submit" class="btn btn-lg btn-primary">Guardar</button>
+                    </div>
+                </form>
+
                 <hr class="my-4">
                 <h4 class="mb-3">Ingredientes</h4>
 

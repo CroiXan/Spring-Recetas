@@ -1,14 +1,12 @@
 package com.duoc.recetas.service;
 
 import java.nio.file.Path;
-
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 import com.duoc.recetas.configuration.RecetaConfig;
-import com.duoc.recetas.model.RecetaRequest;
 import com.duoc.recetas.model.UserLogin;
 import com.duoc.recetas.security.TokenStore;
 import com.google.gson.Gson;
@@ -25,12 +23,11 @@ public class MediaFileService {
     public MediaFileService(){
         tokenStore.setToken("");
     }
-
-    public Mono<String> uploadFile(Path filePath, String description, String idReceta) {
+    public Mono<String> uploadFile(Path filePath, String description, Long idReceta) {
         FileSystemResource fileResource = new FileSystemResource(filePath.toFile());
         getToken();
         WebClient webClient = recetaConfig.webClientWithJwt(tokenStore.getToken());
-        WebClientRequest request = new WebClientRequest(fileResource, description);
+        WebClientRequest request = new WebClientRequest(fileResource, description, idReceta);
         try {
             return webClient.post()
                     .uri("/media/upload")
@@ -63,6 +60,6 @@ public class MediaFileService {
         }
     }
 
-    private record WebClientRequest(FileSystemResource file, String description) {}
+    private record WebClientRequest(FileSystemResource file, String description,Long idReceta) {}
 
 }
