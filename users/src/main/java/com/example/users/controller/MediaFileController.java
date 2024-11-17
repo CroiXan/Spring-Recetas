@@ -52,7 +52,7 @@ public class MediaFileController {
     }
 
     @GetMapping("/receta/{id}")
-    public ResponseEntity<byte[]> downloadFileByRecetaId(@PathVariable Long idReceta) {
+    public ResponseEntity<byte[]> downloadFileByRecetaId(@PathVariable("id") Long idReceta) {
         List<MediaFile> mediaFiles = service.getAllFilesByRecetaId(idReceta);
 
         if(mediaFiles.size() <= 0){

@@ -9,6 +9,13 @@
     <div class="container">
     <article class="blog-post" th:each="receta : ${listarecetas}">
         <h2 class="display-5 link-body-emphasis mb-1" th:text="${receta.nombre}">Nombre Receta</h2>
+        <h2 class="display-5 link-body-emphasis mb-1" th:text="${receta.id_receta}">Nombre Receta</h2>
+        <div th:if="${imagenes != null}">
+            <img th:if="${imagenes[receta.id_receta] != null}" 
+                 th:src="${imagenes[receta.id_receta]}" 
+                 alt="Imagen de la receta" 
+                 style="max-width: 300px; max-height: 300px;">
+        </div>
         <hr>
         <h3>Ingredientes</h3>
         <ul>

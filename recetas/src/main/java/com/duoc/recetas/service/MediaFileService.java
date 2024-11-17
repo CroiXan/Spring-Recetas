@@ -1,6 +1,9 @@
 package com.duoc.recetas.service;
 
 import java.nio.file.Path;
+import java.util.Base64;
+import java.util.Optional;
+
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.MediaType;
 import org.springframework.http.client.MultipartBodyBuilder;
@@ -34,7 +37,7 @@ public class MediaFileService {
         bodyBuilder.part("file", fileResource, MediaType.MULTIPART_FORM_DATA);
         bodyBuilder.part("description", description);
         bodyBuilder.part("id_receta", idReceta);
-        
+
         try {
             return webClient.post()
                     .uri("media/upload")
@@ -69,6 +72,25 @@ public class MediaFileService {
     }
 
     private record WebClientRequest(FileSystemResource file, String description, Long idReceta) {
+    }
+
+    public Mono<String> getImageUrlForReceta(Long id_receta) {
+        getToken();
+        WebClient webClient = recetaConfig.webClientWithJwt(tokenStore.getToken());
+
+        return webClient.get()
+                .uri("media/receta/{id}", id_receta)
+                .retrieve()
+                .onStatus(
+                        status -> status.is4xxClientError() || status.is5xxServerError(),
+                        response -> Mono.error(new RuntimeException("Error fetching image"))
+                )
+                .bodyToMono(byte[].class)
+                .map(bytes -> {
+                    String base64Image = Base64.getEncoder().encodeToString(bytes);
+                    return "data:image/jpeg;base64," + base64Image;
+                })
+                .switchIfEmpty(Mono.empty());
     }
 
 }
