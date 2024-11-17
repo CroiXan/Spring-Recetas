@@ -29,11 +29,11 @@
                         <input type="hidden" name="recetaId" th:value="${receta.id_receta}"/>
                         <div>
                             <label for="nombre">Nombre:</label>
-                            <input type="text" id="nombre" th:field="*{nombre}" required>
+                            <input type="text" id="nombre" name="nombre" th:value="${nombre}" required>
                         </div>
                         <div>
                             <label for="descripcion">Descripción:</label>
-                            <textarea id="descripcion" th:field="*{descripcion}" required></textarea>
+                            <textarea id="descripcion" name="descripcion" th:value="${descripcion}" required></textarea>
                         </div>
                         <div>
                             <label for="archivo" class="form-label">Subir Archivo:</label>

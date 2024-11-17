@@ -59,6 +59,8 @@ public class GestorController {
         Mono<RecetaResponse> monoRecetaResponse = recetaService.getRecetaById(id);
         selectedReceta = monoRecetaResponse.block();
         model.addAttribute("receta", selectedReceta);
+        model.addAttribute("nombre", "");
+        model.addAttribute("descripcion", "");
         return "editarreceta";
     }
 
@@ -71,7 +73,7 @@ public class GestorController {
         return "redirect:/editar/" + recetaId;
     }
 
-    /*@PostMapping("/savefile")
+    @PostMapping("/savefile")
     public String guardarArchivo(
             @RequestParam("recetaId") Long recetaId,
             @RequestParam("nombre") String nombre,
@@ -101,7 +103,7 @@ public class GestorController {
         }
 
         return "redirect:/editar/" + recetaId;
-    }*/
+    }
 
     @PostMapping("/addingrediente/{id}")
     public String addIngrediente(@PathVariable("id") Long id,
