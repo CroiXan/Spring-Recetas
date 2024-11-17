@@ -34,6 +34,10 @@ public class MediaFileService {
         return repository.findAll();
     }
 
+    public List<MediaFile> getAllFilesByRecetaId(Long idReceta) {
+        return repository.findById_receta(idReceta);
+    }
+
     public MediaFile getFile(Long id) {
         return repository.findById(id).orElseThrow(() -> new RuntimeException("File not found"));
     }

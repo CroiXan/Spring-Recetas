@@ -1,6 +1,7 @@
 package com.example.users.controller;
 
 import java.io.IOException;
+import java.util.List;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -48,6 +49,20 @@ public class MediaFileController {
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + mediaFile.getFileName() + "\"")
                 .contentType(MediaType.parseMediaType(mediaFile.getFileType()))
                 .body(mediaFile.getFileData());
+    }
+
+    @GetMapping("/receta/{id}")
+    public ResponseEntity<byte[]> downloadFileByRecetaId(@PathVariable Long idReceta) {
+        List<MediaFile> mediaFiles = service.getAllFilesByRecetaId(idReceta);
+
+        if(mediaFiles.size() <= 0){
+            return new ResponseEntity<byte[]>(HttpStatus.NOT_FOUND);
+        }
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + mediaFiles.get(0).getFileName() + "\"")
+                .contentType(MediaType.parseMediaType(mediaFiles.get(0).getFileType()))
+                .body(mediaFiles.get(0).getFileData());
     }
 
 }
