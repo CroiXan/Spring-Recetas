@@ -1,0 +1,11 @@
+USE recetas;
+
+CREATE TABLE media_file (
+    id BIGINT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+    file_name VARCHAR(255) NOT NULL,
+    file_type VARCHAR(255),
+    file_size BIGINT NOT NULL,
+    file_data LONGBLOB NOT NULL,
+    description LONGTEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB;
