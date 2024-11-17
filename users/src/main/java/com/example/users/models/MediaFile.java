@@ -16,6 +16,7 @@ public class MediaFile {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private Long id_receta;
     private String fileName;
     private String fileType;
     private Long fileSize;

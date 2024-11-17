@@ -18,8 +18,9 @@ public class MediaFileService {
         this.repository = repository;
     }
 
-    public MediaFile saveFile(MultipartFile file, String description) throws IOException {
+    public MediaFile saveFile(MultipartFile file, String description, Long idReceta) throws IOException {
         MediaFile mediaFile = new MediaFile();
+        mediaFile.setId_receta(idReceta);
         mediaFile.setFileName(file.getOriginalFilename());
         mediaFile.setFileType(file.getContentType());
         mediaFile.setFileSize(file.getSize());
