@@ -59,6 +59,12 @@ public class RecetasController {
     public String raiz(Model model){
         Flux<RecetaResponse> fluxRecetaResponse = recetaService.getAllRecetaService();
         List<RecetaResponse> listaRecetaResponse = fluxRecetaResponse.collectList().block();
+        Map<Long, String> imagenes = listaRecetaResponse.stream()
+                .collect(Collectors.toMap(
+                    RecetaResponse::getId_receta,
+                        receta -> mediaFileService.getImageUrlForReceta(receta.getId_receta()).block()
+                ));
+        model.addAttribute("imagenes", imagenes);
         model.addAttribute("listarecetas", listaRecetaResponse);
         return "recetas";
     }

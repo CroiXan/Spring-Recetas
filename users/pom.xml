@@ -273,8 +273,13 @@
 	<dependency>
 		<groupId>org.sonarsource.scanner.maven</groupId>
 		<artifactId>sonar-maven-plugin</artifactId>
-		<version>5.0.0.4389</version>
+		<version>4.0.0.4121</version>
 	</dependency>
+	<dependency>
+        <groupId>com.h3xstream.findsecbugs</groupId>
+        <artifactId>findsecbugs-plugin</artifactId>
+        <version>1.13.0</version>
+    </dependency>
 </dependencies>
 	<build>
 		<plugins>
@@ -299,8 +304,22 @@
 			<plugin>
 				<groupId>org.sonarsource.scanner.maven</groupId>
 				<artifactId>sonar-maven-plugin</artifactId>
-				<version>5.0.0.4389</version>
+				<version>4.0.0.4121</version>
 			</plugin>
+
+			<plugin>
+            <groupId>com.github.spotbugs</groupId>
+            <artifactId>spotbugs-maven-plugin</artifactId>
+            <version>4.8.6.5</version>
+            <executions>
+                <execution>
+                    <phase>verify</phase>
+                    <goals>
+                        <goal>check</goal>
+                    </goals>
+                </execution>
+            </executions>
+        </plugin>
 		</plugins>
 	</build>
 
