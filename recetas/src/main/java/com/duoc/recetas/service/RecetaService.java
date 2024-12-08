@@ -1,6 +1,5 @@
 package com.duoc.recetas.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -29,12 +28,9 @@ public class RecetaService {
     private List<Receta> recetas = new ArrayList<>();
     private Long nextId = 1L;
 
-    private TokenStore tokenStore = new TokenStore();
+    TokenStore tokenStore = new TokenStore();
 
-    private RecetaConfig recetaConfig = new RecetaConfig();
-
-    @Autowired
-    private WebClient webClient;
+    RecetaConfig recetaConfig = new RecetaConfig();
 
     public RecetaService(){
         tokenStore.setToken("");
@@ -247,7 +243,7 @@ public class RecetaService {
             .block();
     }
 
-    private void getToken(){
+    void getToken(){
         if(this.tokenStore.getToken().isEmpty()){
             WebClient webClient = WebClient.builder().baseUrl("http://localhost:8082/user/login").build();
         UserLogin loginRequest = new UserLogin();
@@ -264,4 +260,9 @@ public class RecetaService {
         this.tokenStore = gson.fromJson(response, TokenStore.class);
         }
     }
+
+    public void setTokenStore(TokenStore tokenStore) {
+        this.tokenStore = tokenStore;
+    }
+
 }
