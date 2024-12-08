@@ -32,12 +32,15 @@ import reactor.core.publisher.Mono;
 public class CustomAuthenticationProvider implements AuthenticationProvider {
 
     private TokenStore tokenStore;
+    private final WebClient.Builder webClientBuilder;
+
 
     private static final String SECRET_KEY = "ZnJhc2VzbGFyZ2FzcGFyYWNvbG9jYXJjb21vY2xhdmVlbnVucHJvamVjdG9kZWVtZXBsb3BhcmFqd3Rjb25zcHJpbmdzZWN1cml0eQ==bWlwcnVlYmFkZWVqbXBsb3BhcmFiYXNlNjQ=";
 
-    public CustomAuthenticationProvider(TokenStore tokenStore) {
+    public CustomAuthenticationProvider(TokenStore tokenStore, WebClient.Builder webClientBuilder) {
         super();
         this.tokenStore = tokenStore;
+        this.webClientBuilder = webClientBuilder;
     }
     
     @Override
@@ -62,7 +65,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
         final var restTemplate = new RestTemplate();
         //final var responseEntity = restTemplate.postForEntity("http://localhost:8082/auth/login", requestBody, String.class);
 
-        WebClient webClient = WebClient.builder().baseUrl("http://localhost:8082/user/login").build();
+        WebClient webClient = webClientBuilder.baseUrl("http://localhost:8082/user/login").build();
         UserLogin loginRequest = new UserLogin();
         loginRequest.setEmail(name);
         loginRequest.setPassword(password);
@@ -103,7 +106,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
         return authentication.equals(UsernamePasswordAuthenticationToken.class);
     }
 
-    private Map<String, Object> decodeJWT(String token) {
+    Map<String, Object> decodeJWT(String token) {
     String[] parts = token.split("\\."); // Divide el JWT en sus tres partes
     String payload = parts[1]; // El payload es la segunda parte
 
