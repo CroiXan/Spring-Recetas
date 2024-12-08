@@ -27,7 +27,7 @@ import org.springframework.web.multipart.MultipartFile;
 @Controller
 public class GestorController {
 
-    private RecetaResponse selectedReceta;
+    RecetaResponse selectedReceta;
     private List<RecetaResponse> listaRecetas;
     private final RecetaService recetaService;
     private final MediaFileService mediaFileService;
