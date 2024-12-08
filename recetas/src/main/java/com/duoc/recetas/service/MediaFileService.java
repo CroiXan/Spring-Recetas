@@ -21,11 +21,14 @@ import reactor.core.publisher.Mono;
 @Service
 public class MediaFileService {
 
-    private TokenStore tokenStore = new TokenStore();
+    private final WebClient.Builder webClientBuilder;
 
-    private RecetaConfig recetaConfig = new RecetaConfig();
+    TokenStore tokenStore = new TokenStore();
 
-    public MediaFileService() {
+    RecetaConfig recetaConfig = new RecetaConfig();
+
+    public MediaFileService(WebClient.Builder webClientBuilder) {
+        this.webClientBuilder = webClientBuilder;
         tokenStore.setToken("");
     }
 
@@ -91,6 +94,10 @@ public class MediaFileService {
                     return "data:image/jpeg;base64," + base64Image;
                 })
                 .switchIfEmpty(Mono.empty());
+    }
+
+    public void setTokenStore(TokenStore tokenStore) {
+        this.tokenStore = tokenStore;
     }
 
 }

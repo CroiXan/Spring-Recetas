@@ -92,20 +92,18 @@ public class RecetaServiceTest {
 
     @Test
     void testGetAllRecetaService() {
-        // Preparar mocks y datos de prueba
+
         String fakeToken = "fake-token";
         RecetaResponse recetaResponseMock = new RecetaResponse();
         recetaResponseMock.setNombre("Carne Mechada");
-        // Mock para RecetaConfig
+
         RecetaConfig recetaConfigMock = mock(RecetaConfig.class);
 
-        // Mock para WebClient
         WebClient webClientMock = mock(WebClient.class);
         WebClient.RequestHeadersUriSpec requestHeadersUriSpecMock = mock(WebClient.RequestHeadersUriSpec.class);
         WebClient.RequestHeadersSpec requestHeadersSpecMock = mock(WebClient.RequestHeadersSpec.class);
         WebClient.ResponseSpec responseSpecMock = mock(WebClient.ResponseSpec.class);
 
-        // Configurar mocks
         when(recetaConfigMock.webClientWithJwt(fakeToken)).thenReturn(webClientMock);
         when(webClientMock.get()).thenReturn(requestHeadersUriSpecMock);
         when(requestHeadersUriSpecMock.uri("receta")).thenReturn(requestHeadersSpecMock);
@@ -114,18 +112,15 @@ public class RecetaServiceTest {
                 .thenReturn(Flux.just(recetaResponseMock));
 
         recetaService.tokenStore.setToken(fakeToken);
-        recetaService.recetaConfig = recetaConfigMock; // Inyectar mock manualmente
+        recetaService.recetaConfig = recetaConfigMock;
 
-        // Llamar al método
         Flux<RecetaResponse> result = recetaService.getAllRecetaService();
 
-        // Verificar resultados
         assertNotNull(result);
         List<RecetaResponse> responseList = result.collectList().block();
         assertEquals(1, responseList.size());
         assertEquals("Carne Mechada", responseList.get(0).getNombre());
 
-        // Verificaciones de interacciones
         verify(recetaConfigMock, times(1)).webClientWithJwt(fakeToken);
         verify(webClientMock, times(1)).get();
         verify(requestHeadersUriSpecMock, times(1)).uri("receta");
