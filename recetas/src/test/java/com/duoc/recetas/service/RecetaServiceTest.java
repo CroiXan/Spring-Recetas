@@ -4,11 +4,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.lang.reflect.Method;
 import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -26,6 +28,7 @@ import com.duoc.recetas.model.NameRequest;
 import com.duoc.recetas.model.Receta;
 import com.duoc.recetas.model.RecetaRequest;
 import com.duoc.recetas.model.RecetaResponse;
+import com.duoc.recetas.security.TokenStore;
 
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -528,5 +531,53 @@ public class RecetaServiceTest {
         verify(webClientMock, times(1)).post();
         verify(requestBodyUriSpecMock, times(1)).uri("instrucciones");
         verify(requestBodyUriSpecMock, times(1)).bodyValue(any(InstruccionResponse.class));
+    }
+
+    @Test
+    void testGetToken() throws Exception {
+        // Simular la respuesta del WebClient para el token
+        String fakeResponse = "{\"token\":\"fake-jwt-token\"}";
+
+        // Mock del WebClient y sus interacciones
+        WebClient.Builder webClientBuilderMock = mock(WebClient.Builder.class);
+        WebClient webClientMock = mock(WebClient.class);
+        WebClient.RequestBodyUriSpec requestBodyUriSpecMock = mock(WebClient.RequestBodyUriSpec.class);
+        WebClient.RequestHeadersSpec requestHeadersSpecMock = mock(WebClient.RequestHeadersSpec.class);
+        WebClient.ResponseSpec responseSpecMock = mock(WebClient.ResponseSpec.class);
+
+        // Configurar mocks del WebClient
+        when(webClientBuilderMock.baseUrl("http://localhost:8082/user/login")).thenReturn(webClientBuilderMock);
+        when(webClientBuilderMock.build()).thenReturn(webClientMock);
+        when(webClientMock.post()).thenReturn(requestBodyUriSpecMock);
+        when(requestBodyUriSpecMock.bodyValue(any())).thenReturn(requestHeadersSpecMock);
+        when(requestHeadersSpecMock.retrieve()).thenReturn(responseSpecMock);
+        when(responseSpecMock.bodyToMono(String.class)).thenReturn(Mono.just(fakeResponse));
+
+        // Crear instancia del servicio y setear los mocks
+        RecetaService recetaService = new RecetaService(webClientBuilderMock);
+        TokenStore tokenStore = new TokenStore();
+        tokenStore.setToken(""); // Inicializar con un token vacío
+        recetaService.setTokenStore(tokenStore);
+        recetaService.recetaConfig = mock(RecetaConfig.class);
+
+        // Configurar mock de RecetaConfig
+        when(recetaService.recetaConfig.webClientWithJwt(anyString())).thenReturn(webClientMock);
+
+        // Reflexión para acceder al método privado
+        Method getTokenMethod = RecetaService.class.getDeclaredMethod("getToken");
+        getTokenMethod.setAccessible(true);
+
+        // Ejecutar el método getToken
+        getTokenMethod.invoke(recetaService);
+
+        // Verificar que el token se haya actualizado correctamente
+        assertNotNull(recetaService.tokenStore.getToken());
+        assertEquals("fake-jwt-token", recetaService.tokenStore.getToken());
+
+        // Verificar interacciones con WebClient
+        verify(webClientMock, times(1)).post();
+        verify(requestBodyUriSpecMock, times(1)).bodyValue(any());
+        verify(requestHeadersSpecMock, times(1)).retrieve();
+        verify(responseSpecMock, times(1)).bodyToMono(String.class);
     }
 }

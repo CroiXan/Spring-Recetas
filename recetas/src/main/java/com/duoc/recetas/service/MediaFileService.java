@@ -58,7 +58,7 @@ public class MediaFileService {
 
     private void getToken() {
         if (this.tokenStore.getToken().isEmpty()) {
-            WebClient webClient = WebClient.builder().baseUrl("http://localhost:8082/user/login").build();
+            WebClient webClient = webClientBuilder.baseUrl("http://localhost:8082/user/login").build();
             UserLogin loginRequest = new UserLogin();
             loginRequest.setEmail("test");
             loginRequest.setPassword("test");

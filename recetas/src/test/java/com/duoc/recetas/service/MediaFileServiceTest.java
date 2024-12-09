@@ -3,10 +3,12 @@ package com.duoc.recetas.service;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.lang.reflect.Method;
 import java.nio.file.Path;
 import java.util.Base64;
 
@@ -21,6 +23,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClient.RequestHeadersSpec;
 
 import com.duoc.recetas.configuration.RecetaConfig;
+import com.duoc.recetas.security.TokenStore;
 
 import reactor.core.publisher.Mono;
 
@@ -112,4 +115,38 @@ public class MediaFileServiceTest {
         verify(responseSpec, times(1)).bodyToMono(byte[].class);
     }
 
+    @Test
+    void testGetToken() throws Exception {
+        String fakeResponse = "{\"token\":\"fake-token\"}";
+        TokenStore mockTokenStore = new TokenStore();
+        mockTokenStore.setToken("fake-token");
+
+        WebClient.Builder webClientBuilderMock = mock(WebClient.Builder.class);
+        WebClient webClientMock = mock(WebClient.class);
+        WebClient.RequestBodyUriSpec requestBodyUriSpecMock = mock(WebClient.RequestBodyUriSpec.class);
+        WebClient.RequestHeadersSpec requestHeadersSpecMock = mock(WebClient.RequestHeadersSpec.class);
+        WebClient.ResponseSpec responseSpecMock = mock(WebClient.ResponseSpec.class);
+
+        when(webClientBuilderMock.baseUrl("http://localhost:8082/user/login")).thenReturn(webClientBuilderMock);
+        when(webClientBuilderMock.build()).thenReturn(webClientMock);
+        when(webClientMock.post()).thenReturn(requestBodyUriSpecMock);
+        when(requestBodyUriSpecMock.bodyValue(any())).thenReturn(requestHeadersSpecMock);
+        when(requestHeadersSpecMock.retrieve()).thenReturn(responseSpecMock);
+        when(responseSpecMock.bodyToMono(String.class)).thenReturn(Mono.just(fakeResponse));
+
+        MediaFileService mediaFileService = new MediaFileService(webClientBuilderMock);
+
+        Method getTokenMethod = MediaFileService.class.getDeclaredMethod("getToken");
+        getTokenMethod.setAccessible(true);
+
+        getTokenMethod.invoke(mediaFileService);
+
+        assertEquals("fake-token", mediaFileService.tokenStore.getToken());
+
+        verify(webClientBuilderMock, times(1)).baseUrl("http://localhost:8082/user/login");
+        verify(webClientMock, times(1)).post();
+        verify(requestBodyUriSpecMock, times(1)).bodyValue(any());
+        verify(requestHeadersSpecMock, times(1)).retrieve();
+        verify(responseSpecMock, times(1)).bodyToMono(String.class);
+    }
 }
