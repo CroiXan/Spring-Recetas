@@ -535,17 +535,14 @@ public class RecetaServiceTest {
 
     @Test
     void testGetToken() throws Exception {
-        // Simular la respuesta del WebClient para el token
         String fakeResponse = "{\"token\":\"fake-jwt-token\"}";
 
-        // Mock del WebClient y sus interacciones
         WebClient.Builder webClientBuilderMock = mock(WebClient.Builder.class);
         WebClient webClientMock = mock(WebClient.class);
         WebClient.RequestBodyUriSpec requestBodyUriSpecMock = mock(WebClient.RequestBodyUriSpec.class);
         WebClient.RequestHeadersSpec requestHeadersSpecMock = mock(WebClient.RequestHeadersSpec.class);
         WebClient.ResponseSpec responseSpecMock = mock(WebClient.ResponseSpec.class);
 
-        // Configurar mocks del WebClient
         when(webClientBuilderMock.baseUrl("http://localhost:8082/user/login")).thenReturn(webClientBuilderMock);
         when(webClientBuilderMock.build()).thenReturn(webClientMock);
         when(webClientMock.post()).thenReturn(requestBodyUriSpecMock);
@@ -553,28 +550,22 @@ public class RecetaServiceTest {
         when(requestHeadersSpecMock.retrieve()).thenReturn(responseSpecMock);
         when(responseSpecMock.bodyToMono(String.class)).thenReturn(Mono.just(fakeResponse));
 
-        // Crear instancia del servicio y setear los mocks
         RecetaService recetaService = new RecetaService(webClientBuilderMock);
         TokenStore tokenStore = new TokenStore();
         tokenStore.setToken(""); // Inicializar con un token vacío
         recetaService.setTokenStore(tokenStore);
         recetaService.recetaConfig = mock(RecetaConfig.class);
 
-        // Configurar mock de RecetaConfig
         when(recetaService.recetaConfig.webClientWithJwt(anyString())).thenReturn(webClientMock);
 
-        // Reflexión para acceder al método privado
         Method getTokenMethod = RecetaService.class.getDeclaredMethod("getToken");
         getTokenMethod.setAccessible(true);
 
-        // Ejecutar el método getToken
         getTokenMethod.invoke(recetaService);
 
-        // Verificar que el token se haya actualizado correctamente
         assertNotNull(recetaService.tokenStore.getToken());
         assertEquals("fake-jwt-token", recetaService.tokenStore.getToken());
 
-        // Verificar interacciones con WebClient
         verify(webClientMock, times(1)).post();
         verify(requestBodyUriSpecMock, times(1)).bodyValue(any());
         verify(requestHeadersSpecMock, times(1)).retrieve();

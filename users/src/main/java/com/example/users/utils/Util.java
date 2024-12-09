@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 
 import com.google.common.base.Strings;
 import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 
 public class Util {
@@ -35,10 +36,13 @@ public class Util {
     }
 
     public static Map<String, Object> getMapFromJson(String data){
-        if(!Strings.isNullOrEmpty(data))
-            return new Gson().fromJson(data, new TypeToken<Map<String, Object>>(){}.getType());
-        return new HashMap<>();
-
+        try {
+            if(!Strings.isNullOrEmpty(data))
+                return new Gson().fromJson(data, new TypeToken<Map<String, Object>>(){}.getType());
+            return new HashMap<>();
+        } catch (JsonSyntaxException | IllegalStateException e) {
+            return new HashMap<>();
+        }
     }
     
 }
