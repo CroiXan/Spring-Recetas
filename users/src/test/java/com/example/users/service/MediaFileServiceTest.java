@@ -85,7 +85,7 @@ public class MediaFileServiceTest {
         List<MediaFile> result = mediaFileService.getAllFilesByRecetaId(1L);
 
         assertEquals(2, result.size());
-        assertEquals(2L, result.get(0).getId()); // Sorted by ID in descending order
+        assertEquals(2L, result.get(0).getId());
         verify(repository, times(1)).findById_receta(1L);
     }
 

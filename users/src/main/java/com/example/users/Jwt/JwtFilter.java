@@ -28,11 +28,11 @@ public class JwtFilter extends OncePerRequestFilter {
     @Autowired
     private CustomerUserDetailsService service;
 
-    Claims claims = null;
-    private String userName = null;
+    public Claims claims = null;
+    public String userName = null;
 
     @Override
-    protected void doFilterInternal(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, FilterChain filterChain) throws IOException, ServletException{
+    public void doFilterInternal(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, FilterChain filterChain) throws IOException, ServletException{
         
         if(httpServletRequest.getServletPath().matches("/user/login|/user/forgorPassword|/user/signup")){
             filterChain.doFilter(httpServletRequest, httpServletResponse);
