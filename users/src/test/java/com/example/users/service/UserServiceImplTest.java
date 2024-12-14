@@ -95,30 +95,31 @@ public class UserServiceImplTest {
     }
 
     @Test
-void login_ShouldReturnToken() {
-    
-    Map<String, String> requestMap = new HashMap<>();
-    requestMap.put("email", "test@example.com");
-    requestMap.put("password", "password");
+    void login_ShouldReturnToken() {
 
-    Authentication authentication = mock(Authentication.class);
-    when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class))).thenReturn(authentication);
-    when(authentication.isAuthenticated()).thenReturn(true);
+        Map<String, String> requestMap = new HashMap<>();
+        requestMap.put("email", "test@example.com");
+        requestMap.put("password", "password");
 
-    User mockedUser = mock(User.class);
-    when(mockedUser.getEmail()).thenReturn("test@example.com");
-    when(mockedUser.getRole()).thenReturn("USER");
-    when(mockedUser.getStatus()).thenReturn("true");
+        Authentication authentication = mock(Authentication.class);
+        when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class)))
+                .thenReturn(authentication);
+        when(authentication.isAuthenticated()).thenReturn(true);
 
-    when(customerUserDetailsService.getUserDetail()).thenReturn(mockedUser);
+        User mockedUser = mock(User.class);
+        when(mockedUser.getEmail()).thenReturn("test@example.com");
+        when(mockedUser.getRole()).thenReturn("USER");
+        when(mockedUser.getStatus()).thenReturn("true");
 
-    when(jwtUtil.generateToken("test@example.com", "USER")).thenReturn("mockToken");
+        when(customerUserDetailsService.getUserDetail()).thenReturn(mockedUser);
 
-    ResponseEntity<String> response = userService.login(requestMap);
+        when(jwtUtil.generateToken("test@example.com", "USER")).thenReturn("mockToken");
 
-    assertEquals(HttpStatus.OK, response.getStatusCode());
-    assertEquals("{\"token\":\"mockToken\"}", response.getBody());
-}
+        ResponseEntity<String> response = userService.login(requestMap);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals("{\"token\":\"mockToken\"}", response.getBody());
+    }
 
     @Test
     void login_ShouldReturnInvalidEmailOrPasswordResponse() {
@@ -126,7 +127,8 @@ void login_ShouldReturnToken() {
         requestMap.put("email", "test@example.com");
         requestMap.put("password", "wrongPassword");
 
-        when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class))).thenThrow(RuntimeException.class);
+        when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class)))
+                .thenThrow(RuntimeException.class);
 
         ResponseEntity<String> response = userService.login(requestMap);
 
@@ -192,5 +194,5 @@ void login_ShouldReturnToken() {
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
         assertEquals(Constant.INCORRECT_PASSWORD, response.getBody());
     }
-    
+
 }

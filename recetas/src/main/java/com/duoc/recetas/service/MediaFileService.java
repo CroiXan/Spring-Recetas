@@ -3,6 +3,7 @@ package com.duoc.recetas.service;
 import java.nio.file.Path;
 import java.util.Base64;
 import java.util.Optional;
+import java.util.function.Function;
 
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.MediaType;
@@ -84,15 +85,12 @@ public class MediaFileService {
         return webClient.get()
                 .uri("media/receta/{id}", id_receta)
                 .retrieve()
-                .onStatus(
-                        status -> status.is4xxClientError() || status.is5xxServerError(),
-                        response -> Mono.error(new RuntimeException("Error fetching image"))
-                )
                 .bodyToMono(byte[].class)
                 .map(bytes -> {
                     String base64Image = Base64.getEncoder().encodeToString(bytes);
                     return "data:image/jpeg;base64," + base64Image;
                 })
+                .onErrorReturn("")
                 .switchIfEmpty(Mono.empty());
     }
 
